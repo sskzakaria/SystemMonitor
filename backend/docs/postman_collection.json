@@ -1,0 +1,908 @@
+{
+  "info": {
+    "name": "University Computer Monitoring System API",
+    "description": "Complete API collection for the University Computer Monitoring System - Real-time monitoring and management for 300+ campus computers",
+    "version": "4.0.0",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8001",
+      "type": "string"
+    },
+    {
+      "key": "machine_id",
+      "value": "LAB-PC-042",
+      "type": "string"
+    },
+    {
+      "key": "alert_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "session_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "note_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "group_id",
+      "value": "engineering-lab-301",
+      "type": "string"
+    },
+    {
+      "key": "tag_name",
+      "value": "Production",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "System",
+      "item": [
+        {
+          "name": "Root - System Info",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/",
+              "host": ["{{base_url}}"],
+              "path": [""]
+            },
+            "description": "Get complete system information including features, databases, and available endpoints"
+          }
+        },
+        {
+          "name": "Health Check - Simple",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/health",
+              "host": ["{{base_url}}"],
+              "path": ["health"]
+            },
+            "description": "Simple health check for load balancers"
+          }
+        },
+        {
+          "name": "Health Check - Detailed",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/health",
+              "host": ["{{base_url}}"],
+              "path": ["api", "health"]
+            },
+            "description": "Detailed health check with database status and diagnostics"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Machines",
+      "item": [
+        {
+          "name": "List All Machines",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/machines?limit=100&offset=0",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "machines"],
+              "query": [
+                {"key": "limit", "value": "100"},
+                {"key": "offset", "value": "0"},
+                {"key": "status", "value": "active", "disabled": true},
+                {"key": "building", "value": "Engineering", "disabled": true},
+                {"key": "room", "value": "301", "disabled": true},
+                {"key": "tags", "value": "Production", "disabled": true}
+              ]
+            },
+            "description": "Get list of all machines with optional filtering"
+          }
+        },
+        {
+          "name": "Get Machine Details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/machines/{{machine_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "machines", "{{machine_id}}"]
+            },
+            "description": "Get detailed information about a specific machine"
+          }
+        },
+        {
+          "name": "Get Machine History",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/machines/{{machine_id}}/history?metric=cpu&interval=15m",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "machines", "{{machine_id}}", "history"],
+              "query": [
+                {"key": "metric", "value": "cpu"},
+                {"key": "interval", "value": "15m"},
+                {"key": "start_time", "value": "", "disabled": true},
+                {"key": "end_time", "value": "", "disabled": true}
+              ]
+            },
+            "description": "Get historical metrics for a machine"
+          }
+        },
+        {
+          "name": "Restart Machine",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action\": \"restart\",\n  \"force\": false,\n  \"delay_seconds\": 60\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/machines/{{machine_id}}/restart",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "machines", "{{machine_id}}", "restart"]
+            },
+            "description": "Request a machine restart with optional delay"
+          }
+        },
+        {
+          "name": "Update Machine Tags",
+          "request": {
+            "method": "PUT",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tags\": [\"Lab A\", \"Windows 11\", \"Production\"]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/machines/{{machine_id}}/tags",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "machines", "{{machine_id}}", "tags"]
+            },
+            "description": "Update tags for a machine"
+          }
+        },
+        {
+          "name": "Add Machine Note",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"RAM Upgrade Needed\",\n  \"content\": \"Machine experiencing memory issues. Recommend upgrading to 32GB.\",\n  \"category\": \"hardware\",\n  \"priority\": \"high\",\n  \"tags\": [\"upgrade\", \"memory\"]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/machines/{{machine_id}}/notes",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "machines", "{{machine_id}}", "notes"]
+            }
+          }
+        },
+        {
+          "name": "Schedule Maintenance",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"maintenance_type\": \"hardware_upgrade\",\n  \"description\": \"RAM upgrade from 16GB to 32GB\",\n  \"scheduled_start\": \"2026-03-05T18:00:00Z\",\n  \"scheduled_end\": \"2026-03-05T19:00:00Z\",\n  \"technician\": \"John Smith\",\n  \"notify_users\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/machines/{{machine_id}}/maintenance",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "machines", "{{machine_id}}", "maintenance"]
+            }
+          }
+        },
+        {
+          "name": "Get Machine Alerts",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/machines/{{machine_id}}/alerts",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "machines", "{{machine_id}}", "alerts"],
+              "query": [
+                {"key": "severity", "value": "warning", "disabled": true},
+                {"key": "status", "value": "active", "disabled": true}
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Machine Sessions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/machines/{{machine_id}}/sessions",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "machines", "{{machine_id}}", "sessions"]
+            }
+          }
+        },
+        {
+          "name": "Get Machine Events",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/machines/{{machine_id}}/events",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "machines", "{{machine_id}}", "events"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Events",
+      "item": [
+        {
+          "name": "Get Recent Events",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/events/recent?limit=100",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "events", "recent"],
+              "query": [
+                {"key": "limit", "value": "100"},
+                {"key": "event_type", "value": "", "disabled": true}
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Events by Machine",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/events/machine/{{machine_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "events", "machine", "{{machine_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Get Events by Type",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/events/type/user_login",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "events", "type", "user_login"]
+            }
+          }
+        },
+        {
+          "name": "Create Event",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"machine_id\": \"{{machine_id}}\",\n  \"event_type\": \"manual_note\",\n  \"message\": \"Technician performed maintenance\",\n  \"severity\": \"info\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/events",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "events"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Alerts",
+      "item": [
+        {
+          "name": "Get All Alerts",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/alerts?limit=100",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "alerts"],
+              "query": [
+                {"key": "limit", "value": "100"},
+                {"key": "severity", "value": "critical", "disabled": true},
+                {"key": "status", "value": "active", "disabled": true},
+                {"key": "machine_id", "value": "", "disabled": true}
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Alert Details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/alerts/{{alert_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "alerts", "{{alert_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Acknowledge Alert",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"note\": \"Investigating high CPU usage - likely Windows Update\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/alerts/{{alert_id}}/acknowledge",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "alerts", "{{alert_id}}", "acknowledge"]
+            }
+          }
+        },
+        {
+          "name": "Resolve Alert",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/alerts/{{alert_id}}/resolve",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "alerts", "{{alert_id}}", "resolve"]
+            }
+          }
+        },
+        {
+          "name": "Get Active Alerts",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/alerts/active",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "alerts", "active"]
+            }
+          }
+        },
+        {
+          "name": "Get Critical Alerts",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/alerts/critical",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "alerts", "critical"]
+            }
+          }
+        },
+        {
+          "name": "Get Alert Statistics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/alerts/stats",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "alerts", "stats"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Analytics",
+      "item": [
+        {
+          "name": "System Overview",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/analytics/overview",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "analytics", "overview"]
+            }
+          }
+        },
+        {
+          "name": "Resource Usage Trends",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/analytics/trends?metric=cpu&days=7",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "analytics", "trends"],
+              "query": [
+                {"key": "metric", "value": "cpu"},
+                {"key": "days", "value": "7"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "Building Statistics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/analytics/buildings",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "analytics", "buildings"]
+            }
+          }
+        },
+        {
+          "name": "Machine Health Scores",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/analytics/health-scores",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "analytics", "health-scores"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Statistics",
+      "item": [
+        {
+          "name": "Global Statistics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/stats",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "stats"]
+            }
+          }
+        },
+        {
+          "name": "Machine Statistics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/stats/machines",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "stats", "machines"]
+            }
+          }
+        },
+        {
+          "name": "Resource Statistics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/stats/resources",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "stats", "resources"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Tags",
+      "item": [
+        {
+          "name": "List All Tags",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/tags",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "tags"]
+            }
+          }
+        },
+        {
+          "name": "Create Tag",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Critical Infrastructure\",\n  \"color\": \"#EF4444\",\n  \"description\": \"Mission-critical systems\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/tags",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "tags"]
+            }
+          }
+        },
+        {
+          "name": "Update Tag",
+          "request": {
+            "method": "PUT",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"color\": \"#10B981\",\n  \"description\": \"Updated description\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/tags/{{tag_name}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "tags", "{{tag_name}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Tag",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/tags/{{tag_name}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "tags", "{{tag_name}}"]
+            }
+          }
+        },
+        {
+          "name": "Get Machines with Tag",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/tags/{{tag_name}}/machines",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "tags", "{{tag_name}}", "machines"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Groups",
+      "item": [
+        {
+          "name": "List All Groups",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/groups",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "groups"]
+            }
+          }
+        },
+        {
+          "name": "Create Group",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"group_id\": \"library-computers\",\n  \"group_name\": \"Library Public Computers\",\n  \"description\": \"All publicly accessible library machines\",\n  \"machine_ids\": [\"LIB-PC-001\", \"LIB-PC-002\"]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/groups",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "groups"]
+            }
+          }
+        },
+        {
+          "name": "Get Group Details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/groups/{{group_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "groups", "{{group_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Update Group",
+          "request": {
+            "method": "PUT",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"add_machines\": [\"LIB-PC-003\"],\n  \"remove_machines\": [\"LIB-PC-001\"]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/groups/{{group_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "groups", "{{group_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Group",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/groups/{{group_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "groups", "{{group_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Get Group Machines",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/groups/{{group_id}}/machines",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "groups", "{{group_id}}", "machines"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin",
+      "item": [
+        {
+          "name": "Get System Configuration",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/admin/config",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "admin", "config"]
+            }
+          }
+        },
+        {
+          "name": "Update Configuration",
+          "request": {
+            "method": "PUT",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"alert_thresholds\": {\n    \"cpu_warning\": 75,\n    \"cpu_critical\": 85\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/admin/config",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "admin", "config"]
+            }
+          }
+        },
+        {
+          "name": "Get Alert Thresholds",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/admin/config/thresholds",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "admin", "config", "thresholds"]
+            }
+          }
+        },
+        {
+          "name": "Search Machines",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/admin/search/machines?q=lab",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "admin", "search", "machines"],
+              "query": [
+                {"key": "q", "value": "lab"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "List Locations",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/admin/locations",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "admin", "locations"]
+            }
+          }
+        },
+        {
+          "name": "Bulk Restart Machines",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"machine_ids\": [\"LAB-PC-001\", \"LAB-PC-002\"],\n  \"reason\": \"Security updates\",\n  \"notify_users\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/admin/bulk/restart",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "admin", "bulk", "restart"]
+            }
+          }
+        },
+        {
+          "name": "Bulk Maintenance Mode",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"machine_ids\": [\"LAB-PC-003\"],\n  \"reason\": \"Hardware upgrade\",\n  \"duration_hours\": 2\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/admin/bulk/maintenance",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "admin", "bulk", "maintenance"]
+            }
+          }
+        },
+        {
+          "name": "Bulk Add Tags",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"machine_ids\": [\"LAB-PC-001\", \"LAB-PC-002\"],\n  \"tags\": [\"Production\", \"Critical\"]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/admin/bulk/tags",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "admin", "bulk", "tags"]
+            }
+          }
+        },
+        {
+          "name": "Get All Notes",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/admin/notes?limit=100",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "admin", "notes"],
+              "query": [
+                {"key": "limit", "value": "100"},
+                {"key": "category", "value": "hardware", "disabled": true},
+                {"key": "priority", "value": "high", "disabled": true}
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Monitoring Data",
+      "item": [
+        {
+          "name": "Get Latest Heartbeat",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/data/heartbeat/latest?machine_id={{machine_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "data", "heartbeat", "latest"],
+              "query": [
+                {"key": "machine_id", "value": "{{machine_id}}"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Latest Hardware",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/data/hardware/latest?machine_id={{machine_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "data", "hardware", "latest"],
+              "query": [
+                {"key": "machine_id", "value": "{{machine_id}}"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Historical Hardware",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/data/hardware/historical?machine_id={{machine_id}}&hours=24",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "data", "hardware", "historical"],
+              "query": [
+                {"key": "machine_id", "value": "{{machine_id}}"},
+                {"key": "hours", "value": "24"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get System Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/data/health",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "data", "health"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Data Ingestion",
+      "item": [
+        {
+          "name": "Ingest Hardware Data",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"machine_id\": \"{{machine_id}}\",\n  \"hostname\": \"LAB-DESKTOP-042\",\n  \"timestamp\": \"2026-03-04T15:30:00Z\",\n  \"cpu_usage_percent\": 45.2,\n  \"memory_usage_percent\": 62.8,\n  \"disk_usage_percent\": 55.1\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/ingest/hardware",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "ingest", "hardware"]
+            }
+          }
+        },
+        {
+          "name": "Bulk Ingest All Monitors",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"machine_id\": \"{{machine_id}}\",\n  \"timestamp\": \"2026-03-04T15:30:00Z\",\n  \"monitors\": {\n    \"heartbeat\": {\n      \"hostname\": \"LAB-DESKTOP-042\",\n      \"building\": \"Engineering\",\n      \"room\": \"301\"\n    },\n    \"hardware\": {\n      \"cpu_usage_percent\": 45.2,\n      \"memory_usage_percent\": 62.8\n    }\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/ingest/bulk",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "ingest", "bulk"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

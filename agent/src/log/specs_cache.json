@@ -1,0 +1,298 @@
+{
+  "data": {
+    "machine_id": "DESKTOP-459",
+    "hostname": "DESKTOP-4DB5E9G",
+    "cpu_model": "AMD Ryzen 7 9700X 8-Core Processor",
+    "cpu_cores": 8,
+    "cpu_threads": 16,
+    "cpu_frequency_mhz": 3800.0,
+    "memory_total_gb": 32.0,
+    "memory_type": "DDR5",
+    "disk_total_gb": 3755.0,
+    "os_name": "Microsoft Windows 11 Home",
+    "os_version": "10.0.26100",
+    "os_build": "26100",
+    "manufacturer": "Gigabyte Technology Co., Ltd.",
+    "model": "B650 EAGLE AX",
+    "serial_number": null,
+    "bios_version": "F34a",
+    "cpu": {
+      "physical_cores": 8,
+      "logical_cores": 16,
+      "architecture": "AMD64",
+      "frequency_max_mhz": 3800.0,
+      "frequency_current_mhz": 3800.0,
+      "model_name": "AMD Ryzen 7 9700X 8-Core Processor"
+    },
+    "memory": {
+      "total_gb": 32.0,
+      "total_mb": 31861,
+      "swap_total_gb": 17.0,
+      "modules": [
+        {
+          "capacity_gb": 16.0,
+          "speed_mhz": 6000,
+          "memory_type": "DDR5",
+          "slot": "DIMM 1",
+          "manufacturer": "TeamGroup",
+          "part_number": "UD5-6000"
+        },
+        {
+          "capacity_gb": 16.0,
+          "speed_mhz": 6000,
+          "memory_type": "DDR5",
+          "slot": "DIMM 1",
+          "manufacturer": "TeamGroup",
+          "part_number": "UD5-6000"
+        }
+      ],
+      "slot_count": 2,
+      "memory_type": "DDR5"
+    },
+    "storage": {
+      "physical_disks": [
+        {
+          "model": "WD_BLACK SN770 1TB",
+          "serial": "E823_8FA6_BF53_0001_001B_448B_4741_1D92.",
+          "size_gb": 931.5,
+          "media_type": "HDD",
+          "interface": "SCSI",
+          "partition_count": 1,
+          "firmware": "731100WD"
+        },
+        {
+          "model": "USB Disk 2.0 USB Device",
+          "serial": "2366CA9324291E58",
+          "size_gb": 29.0,
+          "media_type": "Removable",
+          "interface": "USB",
+          "partition_count": 1,
+          "firmware": "8.07"
+        },
+        {
+          "model": "WD_BLACK SN770 1TB",
+          "serial": "E823_8FA6_BF53_0001_001B_448B_4741_465D.",
+          "size_gb": 931.5,
+          "media_type": "HDD",
+          "interface": "SCSI",
+          "partition_count": 4,
+          "firmware": "731100WD"
+        },
+        {
+          "model": "KINGSTON SNV3S2000G",
+          "serial": "0000_0000_0000_0000_0026_B728_3979_B5C5.",
+          "size_gb": 1863.0,
+          "media_type": "HDD",
+          "interface": "SCSI",
+          "partition_count": 5,
+          "firmware": "SDS00101"
+        }
+      ],
+      "partitions": [
+        {
+          "device": "C:\\",
+          "mountpoint": "C:\\",
+          "fstype": "NTFS",
+          "total_gb": 930.86,
+          "used_gb": 892.69,
+          "free_gb": 38.18,
+          "used_pct": 95.9
+        },
+        {
+          "device": "D:\\",
+          "mountpoint": "D:\\",
+          "fstype": "NTFS",
+          "total_gb": 931.51,
+          "used_gb": 861.35,
+          "free_gb": 70.17,
+          "used_pct": 92.5
+        },
+        {
+          "device": "E:\\",
+          "mountpoint": "E:\\",
+          "fstype": "NTFS",
+          "total_gb": 1565.55,
+          "used_gb": 0.15,
+          "free_gb": 1565.4,
+          "used_pct": 0.0
+        },
+        {
+          "device": "F:\\",
+          "mountpoint": "F:\\",
+          "fstype": "FAT32",
+          "total_gb": 28.99,
+          "used_gb": 0.02,
+          "free_gb": 28.96,
+          "used_pct": 0.1
+        },
+        {
+          "device": "G:\\",
+          "mountpoint": "G:\\",
+          "fstype": "FAT32",
+          "total_gb": 15.0,
+          "used_gb": 6.37,
+          "free_gb": 8.63,
+          "used_pct": 42.4
+        }
+      ],
+      "total_physical_gb": 3755.0
+    },
+    "gpu": [
+      {
+        "name": "Parsec Virtual Display Adapter",
+        "driver_version": "0.45.0.0"
+      },
+      {
+        "name": "VirtualMonitor Device",
+        "driver_version": "10.10.30.904"
+      },
+      {
+        "name": "NVIDIA GeForce RTX 5080",
+        "driver_version": "32.0.15.9186",
+        "vram_gb": 4.0,
+        "current_resolution": "3440x1440"
+      },
+      {
+        "name": "AMD Radeon(TM) Graphics",
+        "driver_version": "32.0.13018.6",
+        "vram_gb": 0.5,
+        "current_resolution": "3840x2160",
+        "processor": "AMD Radeon Graphics Processor (0x13C0)"
+      }
+    ],
+    "network": {
+      "interfaces": [
+        {
+          "name": "Local Area Connection",
+          "mac_address": "00-FF-79-9D-18-62",
+          "ipv4": [
+            {
+              "address": "169.254.212.185",
+              "netmask": "255.255.0.0"
+            }
+          ],
+          "ipv6": [],
+          "description": "TAP-Windows Adapter V9",
+          "is_up": false,
+          "speed_mbps": 1000,
+          "mtu": 1500
+        },
+        {
+          "name": "Ethernet 4",
+          "mac_address": "74-56-3C-BF-A8-C2",
+          "ipv4": [
+            {
+              "address": "169.254.21.100",
+              "netmask": "255.255.0.0"
+            }
+          ],
+          "ipv6": [],
+          "description": "Realtek PCIe GbE Family Controller",
+          "is_up": false,
+          "speed_mbps": null,
+          "mtu": 1500
+        },
+        {
+          "name": "Ethernet 3",
+          "mac_address": "00-FF-54-59-6F-91",
+          "ipv4": [
+            {
+              "address": "169.254.143.149",
+              "netmask": "255.255.0.0"
+            }
+          ],
+          "ipv6": [],
+          "description": "TunnelBear Adapter V9",
+          "is_up": false,
+          "speed_mbps": 1073,
+          "mtu": 1500
+        },
+        {
+          "name": "Local Area Connection* 13",
+          "mac_address": "2A-D0-43-ED-C6-F2",
+          "ipv4": [
+            {
+              "address": "169.254.202.207",
+              "netmask": "255.255.0.0"
+            }
+          ],
+          "ipv6": [],
+          "is_up": false,
+          "speed_mbps": null,
+          "mtu": 1500
+        },
+        {
+          "name": "Local Area Connection* 14",
+          "mac_address": "2E-D0-43-ED-C6-F2",
+          "ipv4": [
+            {
+              "address": "169.254.6.202",
+              "netmask": "255.255.0.0"
+            }
+          ],
+          "ipv6": [],
+          "is_up": false,
+          "speed_mbps": null,
+          "mtu": 1500
+        },
+        {
+          "name": "Wi-Fi 2",
+          "mac_address": "28-D0-43-ED-C6-F2",
+          "ipv4": [
+            {
+              "address": "10.0.0.180",
+              "netmask": "255.255.255.0"
+            }
+          ],
+          "ipv6": [
+            {
+              "address": "2607:fea8:bade:ae00::edde"
+            },
+            {
+              "address": "2607:fea8:bade:ae00:f724:2472:95a9:d076"
+            },
+            {
+              "address": "2607:fea8:bade:ae00:f40e:1d21:d338:ca25"
+            }
+          ],
+          "description": "Realtek 8852CE WiFi 6E PCI-E NIC",
+          "is_up": true,
+          "speed_mbps": 286,
+          "mtu": 1500
+        }
+      ]
+    },
+    "os": {
+      "system": "Windows",
+      "release": "11",
+      "version": "10.0.26100",
+      "python_version": "3.13.7",
+      "caption": "Microsoft Windows 11 Home",
+      "build_number": "26100",
+      "architecture": "64-bit",
+      "install_date": "2025-05-16T20:33:12+00:00",
+      "last_boot": "2026-03-04T18:12:37.500000+00:00",
+      "service_pack": 0,
+      "registered_user": "zak"
+    },
+    "bios": {
+      "manufacturer": "American Megatrends International, LLC.",
+      "name": "F34a",
+      "version": "F34a",
+      "release_date": "2025-05-05T00:00:00+00:00",
+      "smbios_version": "3.7"
+    },
+    "system": {
+      "hostname": "DESKTOP-4DB5E9G",
+      "fqdn": "DESKTOP-4DB5E9G",
+      "machine": "AMD64",
+      "boot_time": "2026-03-04T18:12:38.344456+00:00",
+      "manufacturer": "Gigabyte Technology Co., Ltd.",
+      "model": "B650 EAGLE AX",
+      "domain": "WORKGROUP",
+      "dns_hostname": "DESKTOP-4DB5E9G",
+      "system_type": "x64-based PC"
+    }
+  },
+  "timestamp": "2026-03-04T16:06:09.757556"
+}

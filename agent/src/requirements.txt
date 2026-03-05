@@ -1,0 +1,137 @@
+## =============================================================================
+# University Monitor Agent — Requirements
+# =============================================================================
+# Install with:
+#   pip install -r requirements.txt
+#
+# After installing, run the pywin32 post-install script (required once):
+#   python Scripts/pywin32_postinstall.py -install
+#
+# Windows 10 / 11 or Windows Server 2016+ required.
+# Python 3.9+ recommended.
+# =============================================================================
+
+
+# -----------------------------------------------------------------------------
+# Core — used by ALL monitors
+# -----------------------------------------------------------------------------
+
+# System resource monitoring: CPU, memory, disk, users, network I/O, services
+# Used by: heartbeat_monitor, user_activity_monitor, application_monitor,
+#          hardware_monitor, network_monitor, services_monitor
+psutil==6.1.0
+
+
+# -----------------------------------------------------------------------------
+# HTTP / async — used by api_client (data transport to backend)
+# -----------------------------------------------------------------------------
+
+# Async HTTP client for sending monitor data to the backend API
+# Used by: api_client (BackendAPIClient)
+aiohttp==3.10.11
+
+
+# -----------------------------------------------------------------------------
+# Windows-only — Win32 API, COM, WMI
+# -----------------------------------------------------------------------------
+
+# Win32 API bindings:
+#   win32evtlog, win32evtlogutil, win32con  — event_log_monitor
+#   win32ts                                 — user_activity_monitor (RDP sessions)
+#   win32service, win32serviceutil,
+#   servicemanager, win32event              — main.py (Windows service framework)
+#   pythoncom, pywintypes                   — base_monitor (COM/WMI thread init)
+#   winreg                                  — stdlib on Windows, no pip needed
+#
+# Requires post-install script after pip install:
+#   python Scripts/pywin32_postinstall.py -install
+pywin32==308
+
+# WMI (Windows Management Instrumentation)
+# Used by: security_software_monitor (antivirus, firewall, Defender status)
+#          peripherals_monitor (display, audio fallback)
+#          usb_devices_monitor (USB device enumeration)
+#          specs_monitor (hardware specs via Get-CimInstance)
+# Depends on pywin32 being installed and post-install script having been run
+WMI==1.5.1
+
+
+# -----------------------------------------------------------------------------
+# MongoDB — optional direct-write fallback (AGENT_WRITE_TO_DB=true)
+# -----------------------------------------------------------------------------
+
+# Used by: base_monitor (fallback storage if backend API is unavailable)
+# Optional — agent works without it; data goes to the backend API instead
+pymongo==4.10.1
+
+
+# -----------------------------------------------------------------------------
+# GPU monitoring — optional, hardware_monitor only
+# -----------------------------------------------------------------------------
+
+# Primary NVIDIA GPU metrics (direct driver access, most accurate)
+# Used by: hardware_monitor (_gpu_via_pynvml)
+# Optional — omit if no NVIDIA GPU or GPU monitoring not needed
+nvidia-ml-py==12.560.30     # pip name for pynvml
+
+# Fallback NVIDIA GPU metrics (wraps nvidia-smi)
+# Used by: hardware_monitor (_gpu_via_gputil) if pynvml unavailable
+# Optional — only needed if pynvml is not installed
+GPUtil==1.4.0
+
+
+# -----------------------------------------------------------------------------
+# Audio device enumeration — peripherals_monitor only
+# -----------------------------------------------------------------------------
+
+# Primary: Windows MMDevice API (most accurate, no duplicate devices)
+# Used by: peripherals_monitor (_get_audio_pycaw)
+# Optional — monitor degrades to sounddevice or WMI fallback without it
+pycaw==20240210
+
+# Secondary fallback audio enumeration (PortAudio wrapper)
+# Used by: peripherals_monitor (_get_audio_sounddevice) if pycaw unavailable
+# Optional — monitor falls back to WMI without it
+sounddevice==0.5.1
+
+
+# -----------------------------------------------------------------------------
+# Environment / config
+# -----------------------------------------------------------------------------
+
+# Loads .env file into os.environ for local development overrides
+# Used by: config.py (optional — silently skipped if not installed)
+# Not needed in production (environment variables set by SCM / Ansible)
+python-dotenv==1.0.1
+
+
+# -----------------------------------------------------------------------------
+# Build — developer machine only, NOT needed on target PCs
+# -----------------------------------------------------------------------------
+
+# Packages the agent into a self-contained EXE for deployment
+# Used by: setup.py (build step only — not imported at runtime)
+# Install separately on your dev machine: pip install pyinstaller
+# pyinstaller==6.11.1
+
+
+# -----------------------------------------------------------------------------
+# Notes on stdlib modules (no pip needed)
+# -----------------------------------------------------------------------------
+# threading     — base_monitor, all monitors
+# time          — all monitors
+# socket        — heartbeat_monitor (network probe), base_monitor
+# platform      — user_activity_monitor, specs_monitor, utils
+# datetime      — all monitors
+# typing        — all monitors
+# winreg        — security_software_monitor, usb_devices_monitor, specs_monitor
+# subprocess    — services_monitor, specs_monitor, update_monitor, utils
+# json          — all monitors
+# os            — all monitors
+# logging       — all monitors
+# re            — specs_monitor, usb_devices_monitor, network_monitor
+# statistics    — network_monitor
+# asyncio       — base_monitor (async-to-sync bridge for api_client)
+# abc           — base_monitor (abstract base class)
+# collections   — base_monitor (deque), application_monitor (Counter)
+# enum          — api_client (CircuitState)

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>University Computer Monitoring System</title>
+    <script>
+      // Suppress Figma devtools worker errors (harmless background noise)
+      window.addEventListener('error', function(e) {
+        // Check if error is from Figma's internal tooling
+        if (e.filename && e.filename.includes('figma.com/webpack-artifacts')) {
+          e.stopImmediatePropagation();
+          e.preventDefault();
+          return true;
+        }
+      });
+      
+      // Suppress unhandled promise rejections from Figma devtools
+      window.addEventListener('unhandledrejection', function(e) {
+        if (e.reason && e.reason.stack && e.reason.stack.includes('figma.com')) {
+          e.stopImmediatePropagation();
+          e.preventDefault();
+          return true;
+        }
+      });
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
