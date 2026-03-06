@@ -246,8 +246,10 @@ class UniversityMonitorService(win32serviceutil.ServiceFramework):
         (
             HeartbeatMonitor, UserActivityMonitor,
             EventLogMonitor, SecuritySoftwareMonitor,
+            HardwareMonitor,
             HeartbeatMonitorConfig, UserActivityMonitorConfig,
             EventLogMonitorConfig, SecuritySoftwareMonitorConfig,
+            HardwareMonitorConfig,
         ) = _import_monitors()
 
         for name, cls, cfg in [
@@ -255,6 +257,7 @@ class UniversityMonitorService(win32serviceutil.ServiceFramework):
             ("UserActivityMonitor",     UserActivityMonitor,     UserActivityMonitorConfig()),
             ("EventLogMonitor",         EventLogMonitor,         EventLogMonitorConfig()),
             ("SecuritySoftwareMonitor", SecuritySoftwareMonitor, SecuritySoftwareMonitorConfig()),
+            ("HardwareMonitor",         HardwareMonitor,         HardwareMonitorConfig()),
         ]:
             try:
                 m = cls(cfg)
@@ -284,8 +287,10 @@ def run_console():
     (
         HeartbeatMonitor, UserActivityMonitor,
         EventLogMonitor, SecuritySoftwareMonitor,
+        HardwareMonitor,
         HeartbeatMonitorConfig, UserActivityMonitorConfig,
         EventLogMonitorConfig, SecuritySoftwareMonitorConfig,
+        HardwareMonitorConfig,
     ) = _import_monitors()
 
     monitors = []
@@ -294,6 +299,7 @@ def run_console():
         (UserActivityMonitor,     UserActivityMonitorConfig),
         (EventLogMonitor,         EventLogMonitorConfig),
         (SecuritySoftwareMonitor, SecuritySoftwareMonitorConfig),
+        (HardwareMonitor,         HardwareMonitorConfig),
     ]:
         try:
             m = cls(cfg_cls())
@@ -326,17 +332,21 @@ def _import_monitors():
     from monitors.user_activity_monitor import UserActivityMonitor
     from monitors.event_log_monitor import EventLogMonitor
     from monitors.security_software_monitor import SecuritySoftwareMonitor
+    from monitors.hardware_monitor import HardwareMonitor          # ← added
     from core.config import (
         HeartbeatMonitorConfig,
         UserActivityMonitorConfig,
         EventLogMonitorConfig,
         SecuritySoftwareMonitorConfig,
+        HardwareMonitorConfig,                                     # ← added
     )
     return (
         HeartbeatMonitor, UserActivityMonitor,
         EventLogMonitor, SecuritySoftwareMonitor,
+        HardwareMonitor,                                           # ← added
         HeartbeatMonitorConfig, UserActivityMonitorConfig,
         EventLogMonitorConfig, SecuritySoftwareMonitorConfig,
+        HardwareMonitorConfig,                                     # ← added
     )
 
 
