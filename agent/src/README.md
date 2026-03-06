@@ -104,11 +104,11 @@ You should see lines like:
 **Test a single monitor without starting everything:**
 
 ```cmd
-python monitors/heartbeat_monitor.py
-python monitors/user_activity_monitor.py
-python monitors/hardware_monitor.py
-python monitors/event_log_monitor.py
-python monitors/security_software_monitor.py
+python -m monitors.heartbeat_monitor
+python -m monitors.user_activity_monitor
+python -m monitors.hardware_monitor
+python -m monitors.event_log_monitor
+python -m monitors.security_software_monitor
 ```
 
 Each monitor prints one collection cycle to the console and exits — useful for quickly checking if a specific monitor works.
