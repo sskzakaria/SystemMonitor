@@ -1,7 +1,6 @@
 """
 base_monitor.py - Enhanced Base Monitor Class with WMI Threading Fix, Circuit Breaker & API Integration
 
-
 This is the foundation class that all monitors inherit from. It provides:
 - Backend API integration with triple-fallback storage
 - Standardized data formatting
@@ -86,21 +85,30 @@ except ImportError:
     parse_machine_location = lambda: {'building': 'unknown', 'room': 'unknown', 'station': None, 'machine_type': 'classroom_computer'}
 
     class MonitorConfig:
-        MONGODB_URI = 'mongodb+srv://Mongodburimongodb.net/"'
-        DB_NAME_SUFFIX = '_university_monitor'
-        CENTRAL_DB_NAME = 'university_systems_central'
-        BACKEND_ENABLED = False
-        AGENT_WRITE_TO_DB = True
-        AGENT_LOCAL_BACKUP = True
+        """
+        Emergency fallback — only active if core.config fails to import.
+        Still reads from environment variables so .env values apply.
+        If this is being used, core.config has a broken import — check logs.
+        """
+        import os as _os
+        MONGODB_URI     = _os.getenv('MONGODB_URI', '')
+        DB_NAME_SUFFIX  = _os.getenv('DB_NAME_SUFFIX', '_university_monitor')
+        CENTRAL_DB_NAME = _os.getenv('CENTRAL_DB_NAME', 'university_systems_central')
+        BACKEND_URL     = _os.getenv('BACKEND_URL', 'http://localhost:8001')
+        # Keep backend enabled so data still flows in fallback mode
+        BACKEND_ENABLED = _os.getenv('BACKEND_ENABLED', 'true').lower() in ['true', '1', 'yes']
+        # Disable direct DB writes — let the backend handle storage
+        AGENT_WRITE_TO_DB  = False
+        AGENT_LOCAL_BACKUP = False
         RETENTION_HOURS = 48
-        LOG_LEVEL = 'INFO'
+        LOG_LEVEL = _os.getenv('LOG_LEVEL', 'INFO')
         INTERVAL = 60
-        VERSION = '2.0.0'
-        CAMPUS_NAME = 'Main Campus'
-        BUILDING = 'unknown'
-        ROOM = 'unknown'
-        STATION = None
-        MACHINE_TYPE = 'classroom_computer'
+        VERSION       = _os.getenv('VERSION', '2.0.0')
+        CAMPUS_NAME   = _os.getenv('CAMPUS_NAME', 'Main Campus')
+        BUILDING      = _os.getenv('BUILDING', 'unknown')
+        ROOM          = _os.getenv('ROOM', 'unknown')
+        STATION       = None
+        MACHINE_TYPE  = _os.getenv('MACHINE_TYPE', 'classroom_computer')
 
 
 # ============================================================================
@@ -798,5 +806,4 @@ class WindowsWMIMonitor(BaseMonitor):
     # WMI convenience methods inherited from BaseMonitor:
     # - self._init_com_for_thread()
     # - self._get_wmi_connection()
-
     # - self._cleanup_com_for_thread()
