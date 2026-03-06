@@ -1,13 +1,6 @@
 """
 base_monitor.py - Enhanced Base Monitor Class with WMI Threading Fix, Circuit Breaker & API Integration
 
-COMPLETE VERSION - ALL FEATURES:
-1. ✅ WMI Threading Fix - Proper COM initialization for Windows threads
-2. ✅ Circuit Breaker Pattern - Automatic failure recovery
-3. ✅ Health Metrics - Track success/failure rates
-4. ✅ Backend API Integration - Send data to backend API (NEW!)
-5. ✅ Graceful Degradation - Continue even when features fail
-6. ✅ Backwards Compatible - Existing monitors work without changes
 
 This is the foundation class that all monitors inherit from. It provides:
 - Backend API integration with triple-fallback storage
@@ -93,7 +86,7 @@ except ImportError:
     parse_machine_location = lambda: {'building': 'unknown', 'room': 'unknown', 'station': None, 'machine_type': 'classroom_computer'}
 
     class MonitorConfig:
-        MONGODB_URI = 'mongodb+srv://MERN:MERN@mern-app.oyfulwx.mongodb.net/"'
+        MONGODB_URI = 'mongodb+srv://Mongodburimongodb.net/"'
         DB_NAME_SUFFIX = '_university_monitor'
         CENTRAL_DB_NAME = 'university_systems_central'
         BACKEND_ENABLED = False
@@ -805,4 +798,5 @@ class WindowsWMIMonitor(BaseMonitor):
     # WMI convenience methods inherited from BaseMonitor:
     # - self._init_com_for_thread()
     # - self._get_wmi_connection()
+
     # - self._cleanup_com_for_thread()
