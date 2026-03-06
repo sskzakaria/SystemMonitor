@@ -20,7 +20,7 @@ class MonitorConfig:
     """Base monitoring configuration with frontend-friendly defaults"""
     
     # Database configuration
-    MONGODB_URI: str = os.getenv('MONGODB_URI', 'mongodb.net/')
+    MONGODB_URI: str = os.getenv('MONGODB_URI', 'mongodb+srv://MERN:MERN@mern-app.oyfulwx.mongodb.net/')
     DB_NAME_SUFFIX: str = os.getenv('DB_NAME_SUFFIX', '_university_monitor')
     CENTRAL_DB_NAME: str = os.getenv('CENTRAL_DB_NAME', 'university_systems_central')
     
@@ -35,11 +35,11 @@ class MonitorConfig:
     BACKEND_RETRY_ATTEMPTS: int = int(os.getenv('BACKEND_RETRY_ATTEMPTS', '3'))
     BACKEND_FALLBACK_URLS: str = os.getenv('BACKEND_FALLBACK_URLS', '')
 
-    GRAFANA_ENABLED: bool = True
-    GRAFANA_URL: str = "http://localhost:3000"
-    GRAFANA_USER: str = "admin"
-    GRAFANA_PASSWORD: str = "admin"
-    GRAFANA_DATASOURCE_UID: str = ""
+    GRAFANA_ENABLED: bool = os.getenv('GRAFANA_ENABLED', 'true').lower() in ['true', '1', 'yes']
+    GRAFANA_URL: str = os.getenv('GRAFANA_URL', 'http://localhost:3000')
+    GRAFANA_USER: str = os.getenv('GRAFANA_USER', 'admin')
+    GRAFANA_PASSWORD: str = os.getenv('GRAFANA_PASSWORD', 'admin')
+    GRAFANA_DATASOURCE_UID: str = os.getenv('GRAFANA_DATASOURCE_UID', '')
     
     # Agent storage behavior
     AGENT_WRITE_TO_DB: bool = os.getenv('AGENT_WRITE_TO_DB', 'false').lower() in ['true', '1', 'yes', 'on']
@@ -147,12 +147,12 @@ class HardwareMonitorConfig(MonitorConfig):
     """Hardware monitor configuration"""
     INTERVAL: int = int(os.getenv('HARDWARE_MONITOR_INTERVAL', '5'))
     RETENTION_HOURS: int = int(os.getenv('HARDWARE_MONITOR_RETENTION_HOURS', '24'))
-    GRAFANA_ENABLED = True
-    GRAFANA_URL= "http://localhost:3000"
-    GRAFANA_USER = "admin"
-    GRAFANA_PASSWORD = "admin"
-    GRAFANA_DATASOURCE_UID = ""
-    GRAFANA_API_KEY = ""
+    GRAFANA_ENABLED: bool = os.getenv('GRAFANA_ENABLED', 'true').lower() in ['true', '1', 'yes']
+    GRAFANA_URL: str = os.getenv('GRAFANA_URL', 'http://localhost:3000')
+    GRAFANA_USER: str = os.getenv('GRAFANA_USER', 'admin')
+    GRAFANA_PASSWORD: str = os.getenv('GRAFANA_PASSWORD', 'admin')
+    GRAFANA_DATASOURCE_UID: str = os.getenv('GRAFANA_DATASOURCE_UID', '')
+    GRAFANA_API_KEY: str = os.getenv('GRAFANA_API_KEY', '')
     # InfluxDB configuration (optional)
     INFLUXDB_URL: str = os.getenv('HARDWARE_MONITOR_INFLUXDB_URL', 'http://localhost:8086')
     INFLUXDB_TOKEN: str = os.getenv('HARDWARE_MONITOR_INFLUXDB_TOKEN', '')
