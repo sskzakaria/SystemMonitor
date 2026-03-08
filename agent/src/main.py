@@ -29,6 +29,20 @@ COMMAND LINE
 LOG
 ===
   C:\\ProgramData\\UniversityMonitor\\monitor.log
+
+MONITORS STARTED
+================
+  HeartbeatMonitor         30s   — machine online/offline pulse
+  UserActivityMonitor      60s   — logged-in users and sessions
+  EventLogMonitor         300s   — Windows event log (System/App/Security)
+  SecuritySoftwareMonitor 600s   — AV, firewall, Defender status
+  HardwareMonitor          30s   — CPU/RAM/disk/GPU real-time (→ InfluxDB)
+  NetworkMonitor          120s   — ping, latency, DNS, interfaces
+  ApplicationMonitor       60s   — top processes, app categories
+  ServicesMonitor          60s   — Windows services status
+  SpecsMonitor           3600s   — static hardware specs (cached 24h)
+  PeripheralsMonitor      300s   — displays, audio, power/battery
+  USBDevicesMonitor        60s   — USB snapshot-diff + registry audit
 """
 
 import logging
@@ -68,8 +82,9 @@ logger = logging.getLogger("UniversityMonitor")
 SERVICE_NAME         = "UniversityMonitor"
 SERVICE_DISPLAY_NAME = "University Monitor Agent"
 SERVICE_DESCRIPTION  = (
-    "Monitors system health, user activity, event logs, and security "
-    "software. Sends telemetry to the University Monitor backend."
+    "Monitors system health, user activity, hardware, network, event logs, "
+    "security software, processes, services, peripherals, and USB devices. "
+    "Sends telemetry to the University Monitor backend."
 )
 
 
@@ -243,21 +258,30 @@ class UniversityMonitorService(win32serviceutil.ServiceFramework):
 
     def _start_monitors(self):
         logger.info("Starting monitors...")
+        monitors_and_configs = _import_monitors()
         (
-            HeartbeatMonitor, UserActivityMonitor,
-            EventLogMonitor, SecuritySoftwareMonitor,
-            HardwareMonitor,
-            HeartbeatMonitorConfig, UserActivityMonitorConfig,
-            EventLogMonitorConfig, SecuritySoftwareMonitorConfig,
-            HardwareMonitorConfig,
-        ) = _import_monitors()
+            HeartbeatMonitor,    UserActivityMonitor, EventLogMonitor,
+            SecuritySoftwareMonitor, HardwareMonitor, NetworkMonitor,
+            ApplicationMonitor,  ServicesMonitor,     SpecsMonitor,
+            PeripheralsMonitor,  USBDevicesMonitor,
+            HeartbeatMonitorConfig,    UserActivityMonitorConfig, EventLogMonitorConfig,
+            SecuritySoftwareMonitorConfig, HardwareMonitorConfig, NetworkMonitorConfig,
+            ApplicationMonitorConfig,  ServicesMonitorConfig,   SpecsMonitorConfig,
+            PeripheralsMonitorConfig,  USBDevicesMonitorConfig,
+        ) = monitors_and_configs
 
         for name, cls, cfg in [
             ("HeartbeatMonitor",        HeartbeatMonitor,        HeartbeatMonitorConfig()),
             ("UserActivityMonitor",     UserActivityMonitor,     UserActivityMonitorConfig()),
+            ("HardwareMonitor",         HardwareMonitor,         HardwareMonitorConfig()),
+            ("NetworkMonitor",          NetworkMonitor,          NetworkMonitorConfig()),
+            ("ApplicationMonitor",      ApplicationMonitor,      ApplicationMonitorConfig()),
+            ("ServicesMonitor",         ServicesMonitor,         ServicesMonitorConfig()),
             ("EventLogMonitor",         EventLogMonitor,         EventLogMonitorConfig()),
             ("SecuritySoftwareMonitor", SecuritySoftwareMonitor, SecuritySoftwareMonitorConfig()),
-            ("HardwareMonitor",         HardwareMonitor,         HardwareMonitorConfig()),
+            ("PeripheralsMonitor",      PeripheralsMonitor,      PeripheralsMonitorConfig()),
+            ("USBDevicesMonitor",       USBDevicesMonitor,       USBDevicesMonitorConfig()),
+            ("SpecsMonitor",            SpecsMonitor,            SpecsMonitorConfig()),
         ]:
             try:
                 m = cls(cfg)
@@ -284,22 +308,31 @@ class UniversityMonitorService(win32serviceutil.ServiceFramework):
 
 def run_console():
     logger.info("Console mode — Ctrl+C to stop")
+    monitors_and_configs = _import_monitors()
     (
-        HeartbeatMonitor, UserActivityMonitor,
-        EventLogMonitor, SecuritySoftwareMonitor,
-        HardwareMonitor,
-        HeartbeatMonitorConfig, UserActivityMonitorConfig,
-        EventLogMonitorConfig, SecuritySoftwareMonitorConfig,
-        HardwareMonitorConfig,
-    ) = _import_monitors()
+        HeartbeatMonitor,    UserActivityMonitor, EventLogMonitor,
+        SecuritySoftwareMonitor, HardwareMonitor, NetworkMonitor,
+        ApplicationMonitor,  ServicesMonitor,     SpecsMonitor,
+        PeripheralsMonitor,  USBDevicesMonitor,
+        HeartbeatMonitorConfig,    UserActivityMonitorConfig, EventLogMonitorConfig,
+        SecuritySoftwareMonitorConfig, HardwareMonitorConfig, NetworkMonitorConfig,
+        ApplicationMonitorConfig,  ServicesMonitorConfig,   SpecsMonitorConfig,
+        PeripheralsMonitorConfig,  USBDevicesMonitorConfig,
+    ) = monitors_and_configs
 
     monitors = []
     for cls, cfg_cls in [
         (HeartbeatMonitor,        HeartbeatMonitorConfig),
         (UserActivityMonitor,     UserActivityMonitorConfig),
+        (HardwareMonitor,         HardwareMonitorConfig),
+        (NetworkMonitor,          NetworkMonitorConfig),
+        (ApplicationMonitor,      ApplicationMonitorConfig),
+        (ServicesMonitor,         ServicesMonitorConfig),
         (EventLogMonitor,         EventLogMonitorConfig),
         (SecuritySoftwareMonitor, SecuritySoftwareMonitorConfig),
-        (HardwareMonitor,         HardwareMonitorConfig),
+        (PeripheralsMonitor,      PeripheralsMonitorConfig),
+        (USBDevicesMonitor,       USBDevicesMonitorConfig),
+        (SpecsMonitor,            SpecsMonitorConfig),
     ]:
         try:
             m = cls(cfg_cls())
@@ -324,29 +357,46 @@ def run_console():
 
 
 # ---------------------------------------------------------------------------
-# Lazy monitor imports
+# Lazy monitor imports — keeps startup fast and isolates import errors
+# so one bad monitor file doesn't prevent the others from loading
 # ---------------------------------------------------------------------------
 
 def _import_monitors():
-    from monitors.heartbeat_monitor import HeartbeatMonitor
-    from monitors.user_activity_monitor import UserActivityMonitor
-    from monitors.event_log_monitor import EventLogMonitor
+    from monitors.heartbeat_monitor         import HeartbeatMonitor
+    from monitors.user_activity_monitor     import UserActivityMonitor
+    from monitors.event_log_monitor         import EventLogMonitor
     from monitors.security_software_monitor import SecuritySoftwareMonitor
-    from monitors.hardware_monitor import HardwareMonitor          # ← added
+    from monitors.hardware_monitor          import HardwareMonitor
+    from monitors.network_monitor           import NetworkMonitor
+    from monitors.application_monitor       import ApplicationMonitor
+    from monitors.services_monitor          import ServicesMonitor
+    from monitors.specs_monitor             import SpecsMonitor
+    from monitors.peripherals_monitor       import PeripheralsMonitor
+    from monitors.usb_devices_monitor       import USBDevicesMonitor
+
     from core.config import (
         HeartbeatMonitorConfig,
         UserActivityMonitorConfig,
         EventLogMonitorConfig,
         SecuritySoftwareMonitorConfig,
-        HardwareMonitorConfig,                                     # ← added
+        HardwareMonitorConfig,
+        NetworkMonitorConfig,
+        ApplicationMonitorConfig,
+        ServicesMonitorConfig,
+        SpecsMonitorConfig,
+        PeripheralsMonitorConfig,
+        USBDevicesMonitorConfig,
     )
+
     return (
-        HeartbeatMonitor, UserActivityMonitor,
-        EventLogMonitor, SecuritySoftwareMonitor,
-        HardwareMonitor,                                           # ← added
-        HeartbeatMonitorConfig, UserActivityMonitorConfig,
-        EventLogMonitorConfig, SecuritySoftwareMonitorConfig,
-        HardwareMonitorConfig,                                     # ← added
+        HeartbeatMonitor,    UserActivityMonitor, EventLogMonitor,
+        SecuritySoftwareMonitor, HardwareMonitor, NetworkMonitor,
+        ApplicationMonitor,  ServicesMonitor,     SpecsMonitor,
+        PeripheralsMonitor,  USBDevicesMonitor,
+        HeartbeatMonitorConfig,    UserActivityMonitorConfig, EventLogMonitorConfig,
+        SecuritySoftwareMonitorConfig, HardwareMonitorConfig, NetworkMonitorConfig,
+        ApplicationMonitorConfig,  ServicesMonitorConfig,   SpecsMonitorConfig,
+        PeripheralsMonitorConfig,  USBDevicesMonitorConfig,
     )
 
 
