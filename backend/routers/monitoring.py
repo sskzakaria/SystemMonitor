@@ -63,18 +63,78 @@ async def get_machine_applications(
     machine_id: str = Path(...),
     user: OptionalUser = Depends(get_optional_user)
 ):
-    """Get running applications"""
+    """Get running applications and processes"""
     doc = await db_manager.mongodb_db[APPLICATION_LATEST].find_one({"machine_id": machine_id})
     if not doc:
         raise HTTPException(status_code=404, detail=f"Application data not found for {machine_id}")
     
-    # Clean and return (no adapter for applications yet)
+    # Clean and return - handle agent's data format
     cleaned = clean_objectid(doc)
-    return {
-        "processes": cleaned.get("processes", []),
-        "applications": cleaned.get("applications", []),
-        "running_apps": cleaned.get("running_apps", [])
+    
+    # The agent sends: top_by_cpu, top_by_memory, process_summary, application_categories
+    # We need to convert this to a processes array for the frontend
+    processes = []
+    
+    # Combine top_by_cpu and top_by_memory into a unified processes list
+    top_cpu = cleaned.get("top_by_cpu", [])
+    top_memory = cleaned.get("top_by_memory", [])
+    
+    logger.info(f"🔍 Processing applications for {machine_id}: {len(top_cpu)} CPU, {len(top_memory)} memory processes")
+    
+    # Create a dict to merge both lists by PID
+    process_map = {}
+    
+    for proc in top_cpu:
+        pid = proc.get("pid")
+        if pid:
+            process_map[pid] = {
+                "pid": pid,
+                "name": proc.get("name", ""),
+                "cpu_percent": proc.get("cpu_percent", 0),
+                "memory_mb": 0,
+                "memory_percent": 0,
+                "user": proc.get("username", ""),
+                "status": "running"
+            }
+    
+    for proc in top_memory:
+        pid = proc.get("pid")
+        if pid:
+            if pid in process_map:
+                process_map[pid]["memory_mb"] = proc.get("memory_mb", 0)
+                process_map[pid]["memory_percent"] = proc.get("memory_percent", 0)
+            else:
+                process_map[pid] = {
+                    "pid": pid,
+                    "name": proc.get("name", ""),
+                    "cpu_percent": 0,
+                    "memory_mb": proc.get("memory_mb", 0),
+                    "memory_percent": proc.get("memory_percent", 0),
+                    "user": proc.get("username", ""),
+                    "status": "running"
+                }
+    
+    processes = list(process_map.values())
+    
+    logger.info(f"✅ Returning {len(processes)} merged processes for {machine_id}")
+    
+    # Get summary data
+    summary = cleaned.get("process_summary", {})
+    categories = cleaned.get("application_categories", {})
+    
+    result = {
+        "processes": processes,
+        "top_by_cpu": top_cpu,
+        "top_by_memory": top_memory,
+        "process_summary": summary,
+        "application_categories": categories,
+        "total_processes": summary.get("total_processes", len(processes)),
+        "timestamp": cleaned.get("timestamp")
     }
+    
+    logger.info(f"📤 Response structure: processes={len(result['processes'])}, total={result['total_processes']}")
+    
+    return result
 
 
 @router.get("/machines/{machine_id}/services")
